@@ -4,9 +4,6 @@ hoge*
 *RData
 *Rdata
 *.R
-man/*
-NAMESPACE
-DESCRIPTION
 NEWS
 *key
 *.Rcheck*

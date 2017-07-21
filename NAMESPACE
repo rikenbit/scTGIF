@@ -1,0 +1,15 @@
+import(GSEABase)
+import(Biobase)
+import(plotly)
+import(tagcloud)
+import(htmlwidgets)
+import(rmarkdown)
+import(pairsD3)
+importFrom("grDevices", "dev.off", "png")
+importFrom("graphics", "barplot")
+importFrom("utils", "browseURL")
+
+export(
+	calcTGIF,
+	reportTGIF
+)
