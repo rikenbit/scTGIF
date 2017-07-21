@@ -3,7 +3,7 @@ Type: Package
 Title: Functional Annotation of single-cell RNA-Seq data
 Version: 0.0.1
 Date: 2017-07-20
-Author: Koki Tsuyuzaki
+Author: Koki Tsuyuzaki, Itoshi Nikaido
 Maintainer: Koki Tsuyuzaki <k.t.the-answer@hotmail.co.jp>
 URL: https://github.com/rikenbit/scTGIF
 Description: scTGIF enable what kind of cellular patterns and functional patterns contain in single-cell RNA-Seq dataset.
