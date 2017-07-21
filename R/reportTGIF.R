@@ -66,10 +66,10 @@ function (result = NA, Comp.Matrix = NA, nDim = 10, label = NA,
             "/"), recursive = TRUE, overwrite = TRUE)
     })
     save(Comp.Matrix, file = paste0(temp, "/Comp.Matrix.RData"))
-    save(label, file = paste0(temp, "/Group.RData"))
+    save(label, file = paste0(temp, "/label.RData"))
     file.copy(from = paste0(temp, "/Comp.Matrix.RData"), to = out.dir, 
         overwrite = TRUE)
-    file.copy(from = paste0(temp, "/Group.RData"), to = out.dir, 
+    file.copy(from = paste0(temp, "/label.RData"), to = out.dir, 
         overwrite = TRUE)
     png(filename = paste0(temp, "/EigenValue.png"))
     barplot(result$d^2, main = "Eigen Value Distribution")
@@ -105,7 +105,7 @@ function (result = NA, Comp.Matrix = NA, nDim = 10, label = NA,
             i, "](v", i, ".html)\n")
     }
     BODY2 <- paste(BODY2, collapse = "\n")
-    BODY3 <- "# Interactive Cell Browsing\nRun the following R script. This script needs [pairsD3](https://cran.r-project.org/web/packages/pairsD3/index.html) package.\n\n```{r eval=FALSE}\nlibrary(\"pairsD3\")\n\nload(\"/PATH/TO/DIR/YOU/SPECIFIED/Comp.Matrix.RData\")\nload(\"/PATH/TO/DIR/YOU/SPECIFIED/Group.RData\")\nsp <- shinypairs(Comp.Matrix, group=label, labels=rownames(Comp.Matrix))\nsp\n```\n![](1.tiff)\n\nIf you want to get the list of cells surrounded by the cursor in shinypairs window, select **Table of data?** as **Yes** and **Include all variables in table?** as **Yes**.\n![](2.tiff)\n\nThis interactive interface can help you list the ID of cells you are interested in.\n![](3.tiff)\n\n\n\n# License\nCopyright (c) 2017 Koki Tsuyuzaki and RIKEN Bioinformatics Research Unit Released under the [MIT license](https://opensource.org/licenses/mit-license.php)\n"
+    BODY3 <- "# Interactive Cell Browsing\nRun the following R script. This script needs [pairsD3](https://cran.r-project.org/web/packages/pairsD3/index.html) package.\n\n```{r eval=FALSE}\nlibrary(\"pairsD3\")\n\nload(\"/PATH/TO/DIR/YOU/SPECIFIED/Comp.Matrix.RData\")\nload(\"/PATH/TO/DIR/YOU/SPECIFIED/label.RData\")\nsp <- shinypairs(Comp.Matrix, group=label, labels=rownames(Comp.Matrix))\nsp\n```\n![](1.tiff)\n\nIf you want to get the list of cells surrounded by the cursor in shinypairs window, select **Table of data?** as **Yes** and **Include all variables in table?** as **Yes**.\n![](2.tiff)\n\nThis interactive interface can help you list the ID of cells you are interested in.\n![](3.tiff)\n\n\n\n# License\nCopyright (c) 2017 Koki Tsuyuzaki and RIKEN Bioinformatics Research Unit Released under the [MIT license](https://opensource.org/licenses/mit-license.php)\n"
     sink(file = paste0(temp, "/index.Rmd"))
     cat(paste0(HEADER), "\n")
     cat(paste0(BODY1), "\n")
