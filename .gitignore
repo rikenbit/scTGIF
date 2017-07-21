@@ -1,3 +1,21 @@
+hoge*
+*png
+*tiff
+*RData
+*Rdata
+*.R
+man/*
+NAMESPACE
+DESCRIPTION
+NEWS
+*key
+*.Rcheck*
+*Rmd
+*txt
+*gz
+*files
+scTGIF/*
+msigdb_v6.0_files_to_download_locally
 createPackage.*
 
 #################
@@ -268,5 +286,3 @@ pip-log.txt
 *.i*86
 *.x86_64
 *.hex
-
-#
