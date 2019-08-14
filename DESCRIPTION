@@ -1,14 +1,13 @@
 Package: scTGIF
 Type: Package
-Title: Functional Annotation of single-cell RNA-Seq data
-Version: 0.0.1
-Date: 2017-07-20
-Author: Koki Tsuyuzaki, Itoshi Nikaido
-Maintainer: Koki Tsuyuzaki <k.t.the-answer@hotmail.co.jp>
-URL: https://github.com/rikenbit/scTGIF
-Description: scTGIF enable what kind of cellular patterns and functional patterns contain in single-cell RNA-Seq dataset.
-NeedsCompilation: no
-SystemRequirements:	pandoc (>= 1.12.3) - http://pandoc.org
-Depends: R (>= 3.4.1), GSEABase, Biobase, plotly, tagcloud, htmlwidgets, rmarkdown, pairsD3
+Title: Quality control and cell type annotation for unannotated single-cell RNA-Seq data
+Version: 0.99.0
+Date: 2019-08-07
+Authors@R: person("Koki", "Tsuyuzaki", role = c("aut", "cre"), email = "k.t.the-answer@hotmail.co.jp")
+Depends: R (>= 3.6.0)
+Imports: GSEABase, Biobase, SingleCellExperiment, BiocStyle, plotly, tagcloud, rmarkdown, Rcpp, grDevices, graphics, utils, knitr, S4Vectors, SummarizedExperiment, RColorBrewer, nnTensor, methods, scales, msigdbr
 Suggests: testthat
+Description: scTGIF connects the cells and the related gene functions without cell type label.
 License: Artistic-2.0
+biocViews: DimensionReduction, SingleCell
+VignetteBuilder: knitr

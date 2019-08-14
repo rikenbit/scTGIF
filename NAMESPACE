@@ -1,15 +1,26 @@
 import(GSEABase)
 import(Biobase)
+import(SingleCellExperiment)
+import(BiocStyle)
 import(plotly)
 import(tagcloud)
-import(htmlwidgets)
-import(rmarkdown)
-import(pairsD3)
-importFrom("grDevices", "dev.off", "png")
-importFrom("graphics", "barplot")
-importFrom("utils", "browseURL")
+import(methods)
+import(knitr)
+import(msigdbr)
+
+importFrom(rmarkdown, render)
+importFrom(Rcpp, sourceCpp)
+importFrom(grDevices, dev.off, png, colorRampPalette, rgb)
+importFrom(graphics, barplot, par, plot, rect)
+importFrom(utils, browseURL)
+importFrom(S4Vectors, metadata, "metadata<-")
+importFrom(SummarizedExperiment, assay, assays, "assay<-")
+importFrom(RColorBrewer, brewer.pal)
+importFrom(nnTensor, jNMF)
+importFrom(scales, alpha)
 
 export(
+	settingTGIF,
 	calcTGIF,
 	reportTGIF
 )
