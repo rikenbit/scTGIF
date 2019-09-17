@@ -4,10 +4,13 @@
 \alias{calcTGIF,SingleCellExperiment-method}
 \alias{calcTGIF}
 \title{
-Function for connecting cellular patterns and functional patterns using joint NMF
+Function for connecting cellular patterns and functional patterns using jNMF
 }
 \description{
-\code{\link{calcTGIF}} function calculates what kind of cellular patterns and functional patterns are contained in single-cell RNA-seq data and \code{\link{reportTGIF}} function generates report of analytic result.
+\code{\link{calcTGIF}} function calculates what kind of
+cellular patterns and functional patterns are contained in
+single-cell RNA-seq data and \code{\link{reportTGIF}} function
+generates report of analytic result.
 }
 \usage{
 calcTGIF(sce, rank)

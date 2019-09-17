@@ -1,19 +1,23 @@
 #
 # settingTGIF
 #
-setGeneric("settingTGIF", function(sce, gmt, reducedDimNames, assayNames="counts", grid.size=50){
+setGeneric("settingTGIF", function(sce, gmt, reducedDimNames,
+    assayNames="counts", grid.size=50){
     standardGeneric("settingTGIF")})
 
 setMethod("settingTGIF",
     signature(sce="SingleCellExperiment"),
     function(sce, gmt, reducedDimNames, assayNames="counts", grid.size=50){
         userobjects <- deparse(substitute(sce))
-        .settingTGIF(userobjects, gmt, reducedDimNames, assayNames, grid.size, sce)})
+        .settingTGIF(userobjects, gmt, reducedDimNames, assayNames,
+            grid.size, sce)})
 
-.settingTGIF <- function(userobjects, gmt, reducedDimNames, assayNames, grid.size, ...){
+.settingTGIF <- function(userobjects, gmt, reducedDimNames, assayNames,
+    grid.size, ...){
     sce <- list(...)[[1]]
     # class-check
-    if(class(gmt) != "GeneSetCollection"){
+    classCheck <- class(gmt)
+    if(classCheck != "GeneSetCollection"){
         stop(paste0("Please specify the gmt as GeneSetCollection object ",
             "defined by GSEABase package"))
     }
@@ -165,7 +169,7 @@ setMethod("reportTGIF",
     twoD <- eval(parse(text=paste0("reducedDims(sce)$", reducedDimNames)))
 
     # Plot
-    for(i in 1:ncol(H1)){
+    for(i in seq_len(ncol(H1))){
         par(ask=FALSE)
         png(filename=paste0(out.dir, "/figures/Grid_", i, ".png"),
             width=750, height=750)

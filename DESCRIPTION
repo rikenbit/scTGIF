@@ -9,5 +9,5 @@ Imports: GSEABase, Biobase, SingleCellExperiment, BiocStyle, plotly, tagcloud, r
 Suggests: testthat
 Description: scTGIF connects the cells and the related gene functions without cell type label.
 License: Artistic-2.0
-biocViews: DimensionReduction, SingleCell
+biocViews: DimensionReduction, QualityControl, SingleCell
 VignetteBuilder: knitr

@@ -1,20 +1,20 @@
 ---
-title: "Quality control and cell type annotation for unannotated single-cell RNA-Seq data by `scTGIF`"
+title: "Annotation for unannotated single-cell RNA-Seq data by `scTGIF`"
 author:
 - name: Koki Tsuyuzaki
   affiliation: Laboratory for Bioinformatics Research,
-    RIKEN Center for Biosystems Dynamics Reseach
+      RIKEN Center for Biosystems Dynamics Reseach
 - name: Itoshi Nikaido
   affiliation: Laboratory for Bioinformatics Research,
-    RIKEN Center for Biosystems Dynamics Reseach
+      RIKEN Center for Biosystems Dynamics Reseach
   email: k.t.the-answer@hotmail.co.jp
 package: scTGIF
 output:
-  BiocStyle::html_document
+    BiocStyle::html_document
 vignette: |
-  %\VignetteIndexEntry{scTGIF}
-  %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteEncoding{UTF-8}
+    %\VignetteIndexEntry{scTGIF}
+    %\VignetteEngine{knitr::rmarkdown}
+    %\VignetteEncoding{UTF-8}
 ---
 
 # Introduction
@@ -40,7 +40,8 @@ and not always general-purpose.
 The second approach is easy and scalable,
 but still limited when the cell type is not known
 or still not measured by the other research organization.
-The third approach can perhaps be used in any situation but ambiguous and time-consuming task;
+The third approach can perhaps be used in any situation but ambiguous and
+time-consuming task;
 this task is based on the cluster label and the true cluster structure,
 which is not known and some DEG methods have to be performed in each cluster,
 but recent scRNA-Seq dataset has tens to hundreds of cell types.
@@ -86,7 +87,8 @@ low-quality cells and artifacts from real cellular data.
 ### Test data
 
 To demonstrate the usage of `r Biocpkg("scTGIF")`,
-we prepared a testdata of [distal lung epithelium](https://www.nature.com/articles/nature13173).
+we prepared a testdata of
+[distal lung epithelium](https://www.nature.com/articles/nature13173).
 
 ```{r testdata, echo=TRUE, message=FALSE}
 library("scTGIF")
@@ -105,7 +107,7 @@ Although this data is still annotated and the cell type label is provided,
 ```{r testdata2, echo=TRUE, fig.width=7, fig.height=7}
 par(ask=FALSE)
 plot(pca.DistalLungEpithelium, col=label.DistalLungEpithelium, pch=16,
-  main="Distal lung epithelium dataset", xlab="PCA1", ylab="PCA2", bty="n")
+    main="Distal lung epithelium dataset", xlab="PCA1", ylab="PCA2", bty="n")
 text(0.1, 0.05, "AT1", col="#FF7F00", cex=2)
 text(0.07, -0.15, "AT2", col="#E41A1C", cex=2)
 text(0.13, -0.04, "BP", col="#A65628", cex=2)
@@ -127,13 +129,13 @@ the mouse MSigDB genesets like below.
 
 ```{r gmt, echo=TRUE}
 m_df = msigdbr(species = "Mus musculus",
-	category = "H")[, c("gs_name", "entrez_gene")]
+    category = "H")[, c("gs_name", "entrez_gene")]
 
 hallmark = unique(m_df$gs_name)
 gsc <- lapply(hallmark, function(h){
-  target = which(m_df$gs_name == h)
-  geneIds = unique(as.character(m_df$entrez_gene[target]))
-  GeneSet(setName=h, geneIds)
+    target = which(m_df$gs_name == h)
+    geneIds = unique(as.character(m_df$entrez_gene[target]))
+    GeneSet(setName=h, geneIds)
 })
 gmt = GeneSetCollection(gsc)
 ```
@@ -185,9 +187,9 @@ the result of jNMF.
 
 ```{r, report, echo=TRUE, eval=FALSE}
 reportTGIF(sce,
-  html.open=TRUE,
-  title="scTGIF Report for DistalLungEpithelium dataset",
-  author="Koki Tsuyuzaki")
+    html.open=TRUE,
+    title="scTGIF Report for DistalLungEpithelium dataset",
+    author="Koki Tsuyuzaki")
 ```
 
 Since this function takes some time,

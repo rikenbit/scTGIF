@@ -20,7 +20,7 @@ importFrom(nnTensor, jNMF)
 importFrom(scales, alpha)
 
 export(
-	settingTGIF,
-	calcTGIF,
-	reportTGIF
+    settingTGIF,
+    calcTGIF,
+    reportTGIF
 )

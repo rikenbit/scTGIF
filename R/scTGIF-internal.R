@@ -2,80 +2,83 @@
     Y <- matrix(0, nrow = length(targetgeneid), ncol = length(gmt))
     rownames(Y) <- targetgeneid
     colnames(Y) <- names(gmt)
-    lapply(1:length(gmt), function(x) {
+    lapply(seq_len(length(gmt)), function(x) {
         Y[intersect(targetgeneid, gmt[[x]]@geneIds), x] <<- 1
     })
     return(Y)
 }
 
 .twoDimGrid <- function(matData, redData, n=30){
-	xmax <- max(redData[, 1])
-	xmin <- min(redData[, 1])
-	ymax <- max(redData[, 2])
-	ymin <- min(redData[, 2])
-	xdelta <- (xmax - xmin) / n
-	ydelta <- (ymax - ymin) / n
-	text.aMat <- '
-		# include <iostream>
-		# include <Rcpp.h>
-		using namespace Rcpp;
+    xmax <- max(redData[, 1])
+    xmin <- min(redData[, 1])
+    ymax <- max(redData[, 2])
+    ymin <- min(redData[, 2])
+    xdelta <- (xmax - xmin) / n
+    ydelta <- (ymax - ymin) / n
+    text.aMat <- '
+        # include <iostream>
+        # include <Rcpp.h>
+        using namespace Rcpp;
 
-		// [[Rcpp::export]]
-		NumericMatrix aMat (int n, NumericMatrix matData, NumericMatrix redData, NumericVector xmin, NumericVector xdelta, NumericVector ymin, NumericVector ydelta){
+        // [[Rcpp::export]]
+        NumericMatrix aMat (int n, NumericMatrix matData, NumericMatrix redData,
+        NumericVector xmin, NumericVector xdelta, NumericVector ymin,
+        NumericVector ydelta){
 
-			NumericVector target;
-			NumericMatrix eachmat(n*n, 1);
-			NumericMatrix allmat(n*n, matData.nrow());
-			NumericVector counter = NumericVector::create(0);
-			NumericVector thr = NumericVector::create(10, 20, 30, 40, 50, 60, 70, 80, 90, 100);
+        NumericVector target;
+        NumericMatrix eachmat(n*n, 1);
+        NumericMatrix allmat(n*n, matData.nrow());
+        NumericVector counter = NumericVector::create(0);
+        NumericVector thr = NumericVector::create(10, 20, 30, 40, 50, 60,
+            70, 80, 90, 100);
 
-			/*
-				2D Grid Segmentation
-			*/
-			Rcpp::Rcout << "\\n2D Grid Segmentation is running...\\n";
-			Rcpp::Rcout << "=== 0 % of genes are processed ===\\n";
+        /*
+        2D Grid Segmentation
+        */
+        Rcpp::Rcout << "\\n2D Grid Segmentation is running...\\n";
+        Rcpp::Rcout << "=== 0 % of genes are processed ===\\n";
 
-			// Each gene iteration (0 -> No.Gene-1)
-			for(int m=0; m<matData.nrow(); m++){
-				// each col of t-SNE 2D aria (0 -> 10-1)
-				for(int i=0; i<n; i++){
-					// each row of t-SNE 2D aria (0 -> 10-1)
-					for(int j=0; j<n; j++){
-						target = 0;
-						// Each Cell (0 -> No.Cell-1)
-						for(int k=0; k<matData.ncol(); k++){
-							if(redData(k,0) >= xmin[0] + i*xdelta[0]){
-								if(redData(k,0) <= xmin[0] + (i+1)*xdelta[0]){
-									if(redData(k,1) >= ymin[0] + j*ydelta[0]){
-										if(redData(k,1) <= ymin[0] + (j+1)*ydelta[0]){
-											target.push_back(matData(m, k));
-										}
-									}
-								}
-							}
-						}
-						eachmat(i*n+j, 0) = mean(target);
-					}
-				}
-				allmat(_, m) = eachmat(_, 0);
-				if(100*m/(matData.nrow()-1) >= thr[counter[0]]){
-					Rcpp::Rcout << "=== " << thr[counter[0]] << " % of genes are processed ===\\n";
-					counter[0] = counter[0] + 1;
-				}
-			}
-
-			/*
-				Output
-			*/
-			return allmat;
-		}
-	'
-	sourceCpp(code = text.aMat)
-	averaged.matrix <- aMat(n=n, as.matrix(matData),
-		redData, xmin, xdelta, ymin, ydelta)
-	colnames(averaged.matrix) <- rownames(matData)
-	rownames(averaged.matrix) <- paste0("Grid", 1:(n*n))
-	t(averaged.matrix)
+        // Each gene iteration (0 -> No.Gene-1)
+        for(int m=0; m<matData.nrow(); m++){
+            // each col of t-SNE 2D aria (0 -> 10-1)
+            for(int i=0; i<n; i++){
+                // each row of t-SNE 2D aria (0 -> 10-1)
+                for(int j=0; j<n; j++){
+                target = 0;
+                    // Each Cell (0 -> No.Cell-1)
+                    for(int k=0; k<matData.ncol(); k++){
+                        if(redData(k,0) >= xmin[0]+i*xdelta[0]){
+                            if(redData(k,0) <= xmin[0]+(i+1)*xdelta[0]){
+                                if(redData(k,1) >= ymin[0]+j*ydelta[0]){
+                                    if(redData(k,1) <= ymin[0]+(j+1)*ydelta[0]){
+                                        target.push_back(matData(m, k));
+                                    }
+                                }
+                            }
+                        }
+                    }
+                eachmat(i*n+j, 0) = mean(target);
+                }
+            }
+            allmat(_, m) = eachmat(_, 0);
+            if(100*m/(matData.nrow()-1) >= thr[counter[0]]){
+                Rcpp::Rcout << "=== " << thr[counter[0]] <<
+                    " % of genes are processed ===\\n";
+                counter[0] = counter[0] + 1;
+            }
+        }
+        /*
+        Output
+        */
+        return allmat;
+    }
+    '
+    sourceCpp(code = text.aMat)
+    averaged.matrix <- aMat(n=n, as.matrix(matData),
+        redData, xmin, xdelta, ymin, ydelta)
+    colnames(averaged.matrix) <- rownames(matData)
+    rownames(averaged.matrix) <- paste0("Grid", seq_len((n*n)))
+    t(averaged.matrix)
 }
 
 .importAssays <- function(sce, assayNames){
@@ -87,37 +90,36 @@
 }
 
 .plot.twoD_grid.SVD <- function(mat, twoD, n, d){
-    # Plot 1
-	xmax <- max(twoD[, 1])
-	xmin <- min(twoD[, 1])
-	ymax <- max(twoD[, 2])
-	ymin <- min(twoD[, 2])
-	par(mai=c(0,0,0,0))
+    # Plot1
+    xmax <- max(twoD[, 1])
+    xmin <- min(twoD[, 1])
+    ymax <- max(twoD[, 2])
+    ymin <- min(twoD[, 2])
+    par(mai=c(0,0,0,0))
     par(ask=FALSE)
-	plot(twoD,
-	    xlim=c(xmin, xmax),
-	    ylim=c(ymin, ymax),
-	    pch=16, col=rgb(0,0,0,0.5), xlab="", ylab="",
-	    cex=1.5, axes=FALSE)
+    plot(twoD,
+        xlim=c(xmin, xmax), ylim=c(ymin, ymax),
+        pch=16, col=rgb(0,0,0,0.5), xlab="", ylab="",
+        cex=1.5, axes=FALSE)
 
-	# Plot 2
-	grid.value <- mat[, d]
-	original.color <- smoothPalette(grid.value,
-		palfunc=colorRampPalette(rev(brewer.pal(11, "RdYlBu"))))
-	original.color <- alpha(original.color, 0.8)
-	xdiv <- (xmax - xmin) / n
-	ydiv <- (ymax - ymin) / n
-	counter <- 1
-    for(i in 1:n){
-    	for(j in 1:n){
-	    	xstart <- xmin + (i-1) * xdiv
-	    	xend  <- xmin + i * xdiv
-	    	ystart <- ymin + (j-1) * ydiv
-	    	yend <- ymin + j * ydiv
-			rect(xstart, ystart, xend, yend,
-				border="transparent", col=original.color[counter])
-			counter <- counter + 1
-    	}
+    # Plot2
+    grid.value <- mat[, d]
+    original.color <- smoothPalette(grid.value,
+        palfunc=colorRampPalette(rev(brewer.pal(11, "RdYlBu"))))
+    original.color <- alpha(original.color, 0.8)
+    xdiv <- (xmax - xmin) / n
+    ydiv <- (ymax - ymin) / n
+    counter <- 1
+    for(i in seq_len(n)){
+        for(j in seq_len(n)){
+            xstart <- xmin + (i-1) * xdiv
+            xend  <- xmin + i * xdiv
+            ystart <- ymin + (j-1) * ydiv
+            yend <- ymin + j * ydiv
+            rect(xstart, ystart, xend, yend,
+                border="transparent", col=original.color[counter])
+        counter <- counter + 1
+        }
     }
 }
 
@@ -198,9 +200,9 @@
     "dim(metadata(sce)$Y)\n",
     "# Grid size for constructing the matrix X (Default: 50*50)\n",
     "metadata(sce)$grid.size\n",
-	"# GSEABase object for constructing the matrix Y\n",
-	"metadata(sce)$gmt\n",
-	"# Gene expression matrix\n",
+    "# GSEABase object for constructing the matrix Y\n",
+    "metadata(sce)$gmt\n",
+    "# Gene expression matrix\n",
     "is(input)\n",
     "dim(input)\n",
     "input[seq_len(2), seq_len(2)]\n",
@@ -230,44 +232,46 @@
 
 # 3. Attension maps and map related gene functions
 .BODY3 <- function(rank, out.dir){
-	BODY3 <- paste0("# Attension maps and map related gene functions\n",
-	    "```{r, message=F, warning=F, message=F, warning=F}\n", # Top
-	    "library(\"plotly\")\n",
-	    "```\n" # Bottom
-	    )
+    BODY3 <- paste0("# Attension maps and map related gene functions\n",
+        "```{r, message=F, warning=F, message=F, warning=F}\n", # Top
+        "library(\"plotly\")\n",
+        "```\n" # Bottom
+        )
 
-	paste0(BODY3,
-		paste(
-			vapply(seq_len(rank), function(x){
-				paste(c(
-					paste0("## Pattern ", x, "\n"),
-					##### H1 #####
-				    "![](",
-				    paste0(out.dir, "/figures/Grid_", x, ".png"),
-				    ")\n",
-					##### H2 #####
-				    "```{r, message=F, warning=F}\n", # Top
-					"d <- ",
-					x, "\n",
-					"value <- H2[,d]\n",
-					"term <- names(H2[,d])[order(value, decreasing=TRUE)]\n",
-					"value <- value[order(value, decreasing=TRUE)]\n",
-					"target <- seq_len(min(20, length(value)))\n",
-					"value <- value[target]\n",
-					"term <- term[target]\n\n",
-					"p <- plot_ly(x=term, y=~value,\n",
-					"type=\"bar\", color=~value, text=term,\n",
-					"colors=c(\"#4b61ba\", \"gray\", \"#a87963\", \"red\"))\n\n",
-					"layout(p, title=paste0(\"Pattern\", d),\n",
-					"margin = list(b = 250),\n",
-					"   xaxis=list(title=\"Term\", type = 'category',\n",
-					"   	categoryorder = \"array\", categoryarray = term,\n",
-					"   	tickangle = 45),\n",
-					"   yaxis=list(title=\"Value\"))\n",
-				    "```\n\n" # Bottom
-				), collapse="")
-		}, ""), collapse="")
-	)
+    paste0(BODY3,
+        paste(
+            vapply(seq_len(rank), function(x){
+                paste(c(
+                    paste0("## Pattern ", x, "\n"),
+                    ##### H1 #####
+                    "![](",
+                    paste0(out.dir, "/figures/Grid_", x, ".png"),
+                    ")\n",
+                    ##### H2 #####
+                    "```{r, message=F, warning=F}\n", # Top
+                    "d <- ",
+                    x, "\n",
+                    "value <- H2[,d]\n",
+                    "term <- names(H2[,d])[order(value, decreasing=TRUE)]\n",
+                    "value <- value[order(value, decreasing=TRUE)]\n",
+                    "target <- seq_len(min(20, length(value)))\n",
+                    "value <- value[target]\n",
+                    "term <- term[target]\n\n",
+                    "p <- plot_ly(x=term, y=~value,\n",
+                    "type=\"bar\", color=~value, text=term,\n",
+                    "colors=c(\"#4b61ba\", \"gray\", ",
+                    "\"#a87963\", \"red\"))\n\n",
+                    "layout(p, title=paste0(\"Pattern\", d),\n",
+                    "margin = list(b = 250),\n",
+                    "   xaxis=list(title=\"Term\", type = 'category',\n",
+                    "     categoryorder = \"array\", categoryarray = term,\n",
+                    "     tickangle = 45),\n",
+                    "     yaxis=list(title=\"Value\"))\n",
+                    "```\n\n" # Bottom
+                ), collapse="")
+            }, ""),
+        collapse="")
+    )
 }
 
 # 4. Session Information
