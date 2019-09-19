@@ -1,8 +1,8 @@
 Package: scTGIF
 Type: Package
 Title: Quality control and cell type annotation for unannotated single-cell RNA-Seq data
-Version: 0.99.0
-Date: 2019-08-07
+Version: 0.99.1
+Date: 2019-09-19
 Authors@R: person("Koki", "Tsuyuzaki", role = c("aut", "cre"), email = "k.t.the-answer@hotmail.co.jp")
 Depends: R (>= 3.6.0)
 Imports: GSEABase, Biobase, SingleCellExperiment, BiocStyle, plotly, tagcloud, rmarkdown, Rcpp, grDevices, graphics, utils, knitr, S4Vectors, SummarizedExperiment, RColorBrewer, nnTensor, methods, scales, msigdbr
