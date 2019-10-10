@@ -1,13 +1,36 @@
 Package: scTGIF
 Type: Package
-Title: Quality control and cell type annotation for unannotated single-cell RNA-Seq data
-Version: 0.99.1
-Date: 2019-09-19
-Authors@R: person("Koki", "Tsuyuzaki", role = c("aut", "cre"), email = "k.t.the-answer@hotmail.co.jp")
+Title: Cell type annotation for unannotated single-cell RNA-Seq data
+Version: 0.99.2
+Authors@R: person("Koki", "Tsuyuzaki", role = c("aut", "cre"),
+    email = "k.t.the-answer@hotmail.co.jp")
 Depends: R (>= 3.6.0)
-Imports: GSEABase, Biobase, SingleCellExperiment, BiocStyle, plotly, tagcloud, rmarkdown, Rcpp, grDevices, graphics, utils, knitr, S4Vectors, SummarizedExperiment, RColorBrewer, nnTensor, methods, scales, msigdbr
+Imports: GSEABase,
+    Biobase,
+    SingleCellExperiment,
+    BiocStyle,
+    plotly,
+    tagcloud,
+    rmarkdown,
+    Rcpp,
+    grDevices,
+    graphics,
+    utils,
+    knitr,
+    S4Vectors,
+    SummarizedExperiment,
+    RColorBrewer,
+    nnTensor,
+    methods,
+    scales,
+    msigdbr
 Suggests: testthat
-Description: scTGIF connects the cells and the related gene functions without cell type label.
+Description: scTGIF connects the cells and the related gene functions without
+    cell type label.
 License: Artistic-2.0
-biocViews: DimensionReduction, QualityControl, SingleCell
+biocViews: DimensionReduction,
+    QualityControl,
+    SingleCell,
+    Software,
+    GeneExpression
 VignetteBuilder: knitr

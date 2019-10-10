@@ -9,22 +9,11 @@ install.packages("BiocManager", repos="http://cran.r-project.org")
 
 # Bioconductor
 library("BiocManager")
-BiocManager::install("GSEABase", update=TRUE, ask=FALSE)
-BiocManager::install("Biobase", update=TRUE, ask=FALSE)
-BiocManager::install("SingleCellExperiment", update=TRUE, ask=FALSE)
-BiocManager::install("BiocStyle", update=TRUE, ask=FALSE)
-BiocManager::install("plotly", update=TRUE, ask=FALSE)
-BiocManager::install("tagcloud", update=TRUE, ask=FALSE)
-BiocManager::install("knitr", update=TRUE, ask=FALSE)
-BiocManager::install("msigdbr", update=TRUE, ask=FALSE)
-BiocManager::install("rmarkdown", update=TRUE, ask=FALSE)
-BiocManager::install("Rcpp", update=TRUE, ask=FALSE)
-BiocManager::install("S4Vectors", update=TRUE, ask=FALSE)
-BiocManager::install("SummarizedExperiment", update=TRUE, ask=FALSE)
-BiocManager::install("RColorBrewer", update=TRUE, ask=FALSE)
-BiocManager::install("nnTensor", update=TRUE, ask=FALSE)
-BiocManager::install("scales", update=TRUE, ask=FALSE)
-BiocManager::install("testthat", update=TRUE, ask=FALSE)
+BiocManager::install(
+    c("GSEABase", "Biobase", "SingleCellExperiment", "BiocStyle", "plotly",
+    "tagcloud", "knitr", "msigdbr", "rmarkdown", "Rcpp", "S4Vectors",
+    "SummarizedExperiment", "RColorBrewer", "nnTensor", "scales", "testthat"),
+    update=TRUE, ask=FALSE)
 ```
 
 Installation

@@ -138,6 +138,7 @@ gsc <- lapply(hallmark, function(h){
     GeneSet(setName=h, geneIds)
 })
 gmt = GeneSetCollection(gsc)
+gmt = gmt[1:10] # Reduced for this demo
 ```
 
 ### Parameter setting : settingTGIF
@@ -176,8 +177,8 @@ settingTGIF(sce, gmt, reducedDimNames="PCA", assayNames="normcounts")
 After the setting above,
 `calcTGIF` calculates the jNMF with the two matrices described above.
 
-```{r calc, echo=TRUE, eval=FALSE}
-calcTGIF(sce, rank=7)
+```{r calc, echo=TRUE}
+calcTGIF(sce, rank=3)
 ```
 
 ### HTML Report : reportTGIF
@@ -185,9 +186,9 @@ calcTGIF(sce, rank=7)
 Finally, `reportTGIF` generates the HTML report to summarize
 the result of jNMF.
 
-```{r, report, echo=TRUE, eval=FALSE}
+```{r, report, echo=TRUE}
 reportTGIF(sce,
-    html.open=TRUE,
+    html.open=FALSE,
     title="scTGIF Report for DistalLungEpithelium dataset",
     author="Koki Tsuyuzaki")
 ```

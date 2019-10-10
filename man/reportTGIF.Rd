@@ -12,7 +12,7 @@ and functional patterns are contained in single-cell RNA-seq data and
 \code{\link{reportTGIF}} function generates report of analytic result.
 }
 \usage{
-reportTGIF(sce, out.dir=tempdir(), html.open=FALSE,
+reportTGIF(sce, out.dir=tempdir(), html.open=TRUE,
     title="The result of scTGIF",
     author="The person who runs this script",
     assayNames="counts")
@@ -26,7 +26,7 @@ Output directory user want to save the report (Default: tempdir()).
 }
 \item{html.open}{
 Whether html is opened when \code{\link{reportTGIF}} is finished
-(Default: FALSE)
+(Default: TRUE)
 }
 \item{title}{
 Title of report (Default: "The result of scTGIF")
@@ -47,69 +47,69 @@ Some file is generated to output directory user specified.
 }
 \examples{
     if(interactive()){
-    # Package loading
-    library("SingleCellExperiment")
-    library("GSEABase")
-    library("msigdbr")
+        # Package loading
+        library("SingleCellExperiment")
+        library("GSEABase")
+        library("msigdbr")
 
-    # Test data
-    data("DistalLungEpithelium")
-    data("pca.DistalLungEpithelium")
-    data("label.DistalLungEpithelium")
+        # Test data
+        data("DistalLungEpithelium")
+        data("pca.DistalLungEpithelium")
+        data("label.DistalLungEpithelium")
 
-    # Test data
-    par(ask=FALSE)
-    plot(pca.DistalLungEpithelium, col=label.DistalLungEpithelium, pch=16,
-        main="Distal lung epithelium dataset", xlab="PCA1",
-        ylab="PCA2", bty="n")
-    text(0.1, 0.05, "AT1", col="#FF7F00", cex=2)
-    text(0.07, -0.15, "AT2", col="#E41A1C", cex=2)
-    text(0.13, -0.04, "BP", col="#A65628", cex=2)
-    text(0.125, -0.15, "Clara", col="#377EB8", cex=2)
-    text(0.09, -0.2, "Cilliated", col="#4DAF4A", cex=2)
+        # Test data
+        par(ask=FALSE)
+        plot(pca.DistalLungEpithelium, col=label.DistalLungEpithelium, pch=16,
+            main="Distal lung epithelium dataset", xlab="PCA1",
+            ylab="PCA2", bty="n")
+        text(0.1, 0.05, "AT1", col="#FF7F00", cex=2)
+        text(0.07, -0.15, "AT2", col="#E41A1C", cex=2)
+        text(0.13, -0.04, "BP", col="#A65628", cex=2)
+        text(0.125, -0.15, "Clara", col="#377EB8", cex=2)
+        text(0.09, -0.2, "Cilliated", col="#4DAF4A", cex=2)
 
-    # Load the gmt file from MSigDB
-    # Only "Entrez Gene ID" can be used in scTGIF
-    # e.g. gmt <- GSEABase::getGmt(
-    #     "/PATH/YOU/SAVED/THE/GMTFILES/h.all.v6.0.entrez.gmt")
-    # Here we use msigdbr to retrieve mouse gene sets
+        # Load the gmt file from MSigDB
+        # Only "Entrez Gene ID" can be used in scTGIF
+        # e.g. gmt <- GSEABase::getGmt(
+        #     "/PATH/YOU/SAVED/THE/GMTFILES/h.all.v6.0.entrez.gmt")
+        # Here we use msigdbr to retrieve mouse gene sets
 
-    # Mouse gene set (NCBI Gene ID)
-    m_df = msigdbr(species = "Mus musculus", category = "H")[,
-        c("gs_name", "entrez_gene")]
+        # Mouse gene set (NCBI Gene ID)
+        m_df = msigdbr(species = "Mus musculus", category = "H")[,
+            c("gs_name", "entrez_gene")]
 
-    # Convert to GeneSetCollection
-    hallmark = unique(m_df$gs_name)
-    gsc <- lapply(hallmark, function(h){
-        target = which(m_df$gs_name == h)
-        geneIds = unique(as.character(m_df$entrez_gene[target]))
-        GeneSet(setName=h, geneIds)
-    })
-    gmt = GeneSetCollection(gsc)
+        # Convert to GeneSetCollection
+        hallmark = unique(m_df$gs_name)
+        gsc <- lapply(hallmark, function(h){
+            target = which(m_df$gs_name == h)
+            geneIds = unique(as.character(m_df$entrez_gene[target]))
+            GeneSet(setName=h, geneIds)
+        })
+        gmt = GeneSetCollection(gsc)
 
-    # SingleCellExperiment-class
-    sce <- SingleCellExperiment(assays = list(counts = DistalLungEpithelium))
-    reducedDims(sce) <- SimpleList(PCA=pca.DistalLungEpithelium)
+        # SingleCellExperiment-class
+        sce <- SingleCellExperiment(assays = list(counts = DistalLungEpithelium))
+        reducedDims(sce) <- SimpleList(PCA=pca.DistalLungEpithelium)
 
-    # User's Original Normalization Function
-    CPMED <- function(input){
-        libsize <- colSums(input)
-        median(libsize) * t(t(input) / libsize)
-    }
-    # Normalization
-    normcounts(sce) <- log10(CPMED(counts(sce)) + 1)
+        # User's Original Normalization Function
+        CPMED <- function(input){
+            libsize <- colSums(input)
+            median(libsize) * t(t(input) / libsize)
+        }
+        # Normalization
+        normcounts(sce) <- log10(CPMED(counts(sce)) + 1)
 
-    # Registration of required information into metadata(sce)
-    settingTGIF(sce, gmt, reducedDimNames="PCA", assayNames="normcounts")
+        # Registration of required information into metadata(sce)
+        settingTGIF(sce, gmt, reducedDimNames="PCA", assayNames="normcounts")
 
-    # Functional Annotation based on jNMF
-    calcTGIF(sce, rank=7)
+        # Functional Annotation based on jNMF
+        calcTGIF(sce, rank=7)
 
-    # HTML Reprt
-    reportTGIF(sce,
-        html.open=TRUE,
-        title="scTGIF Report for DistalLungEpithelium dataset",
-        author="Koki Tsuyuzaki")
+        # HTML Reprt
+        reportTGIF(sce,
+            html.open=TRUE,
+            title="scTGIF Report for DistalLungEpithelium dataset",
+            author="Koki Tsuyuzaki")
     }
 }
 

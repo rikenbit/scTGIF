@@ -34,11 +34,11 @@ setMethod("settingTGIF",
     # Import expression matrix
     input <- .importAssays(sce, assayNames)
     # Low dimensional data
-    twoD <- eval(parse(text=paste0("reducedDims(sce)$", reducedDimNames)))
+    twoD <- reducedDims(sce)[[reducedDimNames]]
     if(ncol(input) != nrow(twoD)){
         stop(paste0("The number of columns in assay(sce) ",
             "and the number of samples in ",
-            paste0("reducedDims(sce)$", reducedDimNames),
+            paste0("reducedDims(sce)[['", reducedDimNames, "']]"),
             "must be same"))
     }
     # two dimensional coordinates
@@ -49,7 +49,7 @@ setMethod("settingTGIF",
     common.geneid <- intersect(data.geneid, gmt.geneid)
     if(length(common.geneid) == 0){
         stop(paste0("Please specify the rownames of assay(sce) and ",
-            paste0("reducedDims(sce)$", reducedDimNames),
+            paste0("reducedDims(sce)[['", reducedDimNames, "']]"),
             " must be same and specified as NCBI (Entrez) Gene IDs"))
     }
     # Gene * Grid matrix
@@ -85,9 +85,9 @@ setMethod("calcTGIF",
         stop(paste0("Please specify rank parameter smaller than ",
             min(ncol(X), ncol(Y))))
     }
-    cat(paste0("Gene * Grid matrix X has ", nrow(X), " rows and ",
+    cat(paste0("Gene x Grid matrix (X) has ", nrow(X), " rows and ",
         ncol(X), " columns\n"))
-    cat(paste0("Gene * Function matrix Y has ", nrow(Y), " rows and ",
+    cat(paste0("Gene x Function matrix (Y) has ", nrow(Y), " rows and ",
         ncol(Y), " columns\n"))
     # Joint NMF
     res.sctgif <- jNMF(list(X=X, Y=Y), J=rank, algorithm="Frobenius")
@@ -110,7 +110,7 @@ setMethod("calcTGIF",
 #
 # reportTGIF
 #
-setGeneric("reportTGIF", function(sce, out.dir=tempdir(), html.open=FALSE,
+setGeneric("reportTGIF", function(sce, out.dir=tempdir(), html.open=TRUE,
     title="The result of scTGIF",
     author="The person who runs this script",
     assayNames="counts"){
@@ -118,7 +118,7 @@ setGeneric("reportTGIF", function(sce, out.dir=tempdir(), html.open=FALSE,
 
 setMethod("reportTGIF",
     signature(sce="SingleCellExperiment"),
-    function(sce, out.dir=tempdir(), html.open=FALSE,
+    function(sce, out.dir=tempdir(), html.open=TRUE,
     title="The result of scTGIF",
     author="The person who runs this script",
     assayNames="counts"){
@@ -166,7 +166,7 @@ setMethod("reportTGIF",
     relchange <- metadata(sce)$relchange
 
     # Low dimensional data
-    twoD <- eval(parse(text=paste0("reducedDims(sce)$", reducedDimNames)))
+    twoD <- reducedDims(sce)[[reducedDimNames]]
 
     # Plot
     for(i in seq_len(ncol(H1))){
@@ -195,6 +195,10 @@ setMethod("reportTGIF",
     # Rendering
     message("index.Rmd is compiled to index.html...")
     render(paste0(out.dir, "/index.Rmd"), quiet=TRUE)
+    # HTML Open
+    message(paste0("################################################\n",
+        "Data files are saved in\n",
+        out.dir, "\n################################################\n"))
     if (html.open) {
         browseURL(paste0(out.dir, "/index.html"))
     }

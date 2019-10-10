@@ -15,7 +15,8 @@
     ymin <- min(redData[, 2])
     xdelta <- (xmax - xmin) / n
     ydelta <- (ymax - ymin) / n
-    text.aMat <- '
+    aMat <- NULL
+    sourceCpp(code = '
         # include <iostream>
         # include <Rcpp.h>
         using namespace Rcpp;
@@ -71,9 +72,7 @@
         Output
         */
         return allmat;
-    }
-    '
-    sourceCpp(code = text.aMat)
+    }')
     averaged.matrix <- aMat(n=n, as.matrix(matData),
         redData, xmin, xdelta, ymin, ydelta)
     colnames(averaged.matrix) <- rownames(matData)
@@ -83,7 +82,7 @@
 
 .importAssays <- function(sce, assayNames){
     if(assayNames %in% names(assays(sce))){
-        eval(parse(text=paste0("assays(sce)$", assayNames)))
+        assays(sce)[[assayNames]]
     }else{
         stop("Please specify the valid assayNames (cf. names(assays(sce)))")
     }
