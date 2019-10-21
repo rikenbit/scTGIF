@@ -75,7 +75,7 @@ Some file is generated to output directory user specified.
         # Here we use msigdbr to retrieve mouse gene sets
 
         # Mouse gene set (NCBI Gene ID)
-        m_df = msigdbr(species = "Mus musculus", category = "H")[,
+        m_df <- msigdbr(species = "Mus musculus", category = "H")[,
             c("gs_name", "entrez_gene")]
 
         # Convert to GeneSetCollection
@@ -85,10 +85,11 @@ Some file is generated to output directory user specified.
             geneIds = unique(as.character(m_df$entrez_gene[target]))
             GeneSet(setName=h, geneIds)
         })
-        gmt = GeneSetCollection(gsc)
+        gmt <- GeneSetCollection(gsc)
 
         # SingleCellExperiment-class
-        sce <- SingleCellExperiment(assays = list(counts = DistalLungEpithelium))
+        sce <- SingleCellExperiment(
+            assays = list(counts = DistalLungEpithelium))
         reducedDims(sce) <- SimpleList(PCA=pca.DistalLungEpithelium)
 
         # User's Original Normalization Function
@@ -100,13 +101,14 @@ Some file is generated to output directory user specified.
         normcounts(sce) <- log10(CPMED(counts(sce)) + 1)
 
         # Registration of required information into metadata(sce)
-        settingTGIF(sce, gmt, reducedDimNames="PCA", assayNames="normcounts")
+        sce2 <- settingTGIF(sce, gmt, reducedDimNames="PCA",
+            assayNames="normcounts")
 
         # Functional Annotation based on jNMF
-        calcTGIF(sce, rank=7)
+        sce2 <- calcTGIF(sce2, rank=7)
 
         # HTML Reprt
-        reportTGIF(sce,
+        reportTGIF(sce2,
             html.open=TRUE,
             title="scTGIF Report for DistalLungEpithelium dataset",
             author="Koki Tsuyuzaki")

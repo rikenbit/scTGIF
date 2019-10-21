@@ -8,11 +8,10 @@ setGeneric("settingTGIF", function(sce, gmt, reducedDimNames,
 setMethod("settingTGIF",
     signature(sce="SingleCellExperiment"),
     function(sce, gmt, reducedDimNames, assayNames="counts", grid.size=50){
-        userobjects <- deparse(substitute(sce))
-        .settingTGIF(userobjects, gmt, reducedDimNames, assayNames,
+        .settingTGIF(gmt, reducedDimNames, assayNames,
             grid.size, sce)})
 
-.settingTGIF <- function(userobjects, gmt, reducedDimNames, assayNames,
+.settingTGIF <- function(gmt, reducedDimNames, assayNames,
     grid.size, ...){
     sce <- list(...)[[1]]
     # class-check
@@ -62,7 +61,7 @@ setMethod("settingTGIF",
     metadata(sce) <- list(gmt=gmt, X=X, Y=Y,
         common.geneid=common.geneid, grid.size=grid.size,
         reducedDimNames=reducedDimNames)
-    assign(userobjects, sce, envir=.GlobalEnv)
+    sce
 }
 
 #
@@ -74,10 +73,9 @@ setGeneric("calcTGIF", function(sce, rank){
 setMethod("calcTGIF",
     signature(sce="SingleCellExperiment"),
     function(sce, rank){
-        userobjects <- deparse(substitute(sce))
-        .calcTGIF(userobjects, rank, sce)})
+        .calcTGIF(rank, sce)})
 
-.calcTGIF <- function(userobjects, rank, ...){
+.calcTGIF <- function(rank, ...){
     sce <- list(...)[[1]]
     X <- metadata(sce)$X
     Y <- metadata(sce)$Y
@@ -103,7 +101,7 @@ setMethod("calcTGIF",
         grid.size=grid.size, reducedDimNames=reducedDimNames,
         sctgif=res.sctgif, rank=rank, recerror=recerror,
         relchange=relchange)
-    assign(userobjects, sce, envir=.GlobalEnv)
+    sce
 }
 
 
@@ -122,7 +120,6 @@ setMethod("reportTGIF",
     title="The result of scTGIF",
     author="The person who runs this script",
     assayNames="counts"){
-        userobjects <- deparse(substitute(sce))
         .reportTGIF(out.dir, html.open, title, author, assayNames, sce)})
 
 .reportTGIF <- function(out.dir, html.open, title, author, assayNames, ...){
