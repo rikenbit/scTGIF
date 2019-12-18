@@ -10,7 +10,7 @@ Paramter setting for scTGIF
 All parameters is saved to metadata slot of SingleCellExperiment object.
 }
 \usage{
-settingTGIF(sce, gmt, reducedDimNames, assayNames="counts", grid.size=50)
+settingTGIF(sce, gmt, reducedDimNames, assayNames="counts", nbins=40)
 }
 \arguments{
 \item{sce}{
@@ -30,9 +30,8 @@ The names of reducedDim(sce) that user want use in scTGIF.
 The unit of gene expression for using scTGIF
 (e.g. normcounts, cpm...etc) (Default: "counts").
 }
-\item{grid.size}{
-The grid size for segmentation of the two dimensional plot of reducedDim(sce)
-(Default: 50, which means 50*50 grids).
+\item{nbins}{
+The number of bins of schex (Default: 40).
 }
 }
 \value{

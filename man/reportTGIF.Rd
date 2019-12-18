@@ -12,7 +12,7 @@ and functional patterns are contained in single-cell RNA-seq data and
 \code{\link{reportTGIF}} function generates report of analytic result.
 }
 \usage{
-reportTGIF(sce, out.dir=tempdir(), html.open=TRUE,
+reportTGIF(sce, out.dir=tempdir(), html.open=FALSE,
     title="The result of scTGIF",
     author="The person who runs this script",
     assayNames="counts")
@@ -26,7 +26,7 @@ Output directory user want to save the report (Default: tempdir()).
 }
 \item{html.open}{
 Whether html is opened when \code{\link{reportTGIF}} is finished
-(Default: TRUE)
+(Default: FALSE)
 }
 \item{title}{
 Title of report (Default: "The result of scTGIF")
@@ -101,14 +101,14 @@ Some file is generated to output directory user specified.
         normcounts(sce) <- log10(CPMED(counts(sce)) + 1)
 
         # Registration of required information into metadata(sce)
-        sce2 <- settingTGIF(sce, gmt, reducedDimNames="PCA",
+        settingTGIF(sce, gmt, reducedDimNames="PCA",
             assayNames="normcounts")
 
         # Functional Annotation based on jNMF
-        sce2 <- calcTGIF(sce2, rank=7)
+        calcTGIF(sce, rank=7)
 
         # HTML Reprt
-        reportTGIF(sce2,
+        reportTGIF(sce,
             html.open=TRUE,
             title="scTGIF Report for DistalLungEpithelium dataset",
             author="Koki Tsuyuzaki")
