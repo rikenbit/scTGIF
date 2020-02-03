@@ -1,7 +1,7 @@
 Package: scTGIF
 Type: Package
 Title: Cell type annotation for unannotated single-cell RNA-Seq data
-Version: 1.0.1
+Version: 1.2.0
 Authors@R: person("Koki", "Tsuyuzaki", role = c("aut", "cre"),
     email = "k.t.the-answer@hotmail.co.jp")
 Depends: R (>= 3.6.0)
@@ -23,7 +23,11 @@ Imports: GSEABase,
     nnTensor,
     methods,
     scales,
-    msigdbr
+    msigdbr,
+    schex,
+    tibble,
+    ggplot2,
+    igraph
 Suggests: testthat
 Description: scTGIF connects the cells and the related gene functions without
     cell type label.

@@ -8,76 +8,15 @@
     return(Y)
 }
 
-.twoDimGrid <- function(matData, redData, n=30){
-    xmax <- max(redData[, 1])
-    xmin <- min(redData[, 1])
-    ymax <- max(redData[, 2])
-    ymin <- min(redData[, 2])
-    xdelta <- (xmax - xmin) / n
-    ydelta <- (ymax - ymin) / n
-    aMat <- NULL
-    sourceCpp(code = '
-        # include <iostream>
-        # include <Rcpp.h>
-        using namespace Rcpp;
-
-        // [[Rcpp::export]]
-        NumericMatrix aMat (int n, NumericMatrix matData, NumericMatrix redData,
-        NumericVector xmin, NumericVector xdelta, NumericVector ymin,
-        NumericVector ydelta){
-
-        NumericVector target;
-        NumericMatrix eachmat(n*n, 1);
-        NumericMatrix allmat(n*n, matData.nrow());
-        NumericVector counter = NumericVector::create(0);
-        NumericVector thr = NumericVector::create(10, 20, 30, 40, 50, 60,
-            70, 80, 90, 100);
-
-        /*
-        2D Grid Segmentation
-        */
-        Rcpp::Rcout << "\\n2D Grid Segmentation is running...\\n";
-        Rcpp::Rcout << "=== 0 % of genes are processed ===\\n";
-
-        // Each gene iteration (0 -> No.Gene-1)
-        for(int m=0; m<matData.nrow(); m++){
-            // each col of t-SNE 2D aria (0 -> 10-1)
-            for(int i=0; i<n; i++){
-                // each row of t-SNE 2D aria (0 -> 10-1)
-                for(int j=0; j<n; j++){
-                target = 0;
-                    // Each Cell (0 -> No.Cell-1)
-                    for(int k=0; k<matData.ncol(); k++){
-                        if(redData(k,0) >= xmin[0]+i*xdelta[0]){
-                            if(redData(k,0) <= xmin[0]+(i+1)*xdelta[0]){
-                                if(redData(k,1) >= ymin[0]+j*ydelta[0]){
-                                    if(redData(k,1) <= ymin[0]+(j+1)*ydelta[0]){
-                                        target.push_back(matData(m, k));
-                                    }
-                                }
-                            }
-                        }
-                    }
-                eachmat(i*n+j, 0) = mean(target);
-                }
-            }
-            allmat(_, m) = eachmat(_, 0);
-            if(100*m/(matData.nrow()-1) >= thr[counter[0]]){
-                Rcpp::Rcout << "=== " << thr[counter[0]] <<
-                    " % of genes are processed ===\\n";
-                counter[0] = counter[0] + 1;
-            }
-        }
-        /*
-        Output
-        */
-        return allmat;
-    }')
-    averaged.matrix <- aMat(n=n, as.matrix(matData),
-        redData, xmin, xdelta, ymin, ydelta)
-    colnames(averaged.matrix) <- rownames(matData)
-    rownames(averaged.matrix) <- paste0("Grid", seq_len((n*n)))
-    t(averaged.matrix)
+.twoDimBin <- function(sce, common.geneid, assayNames){
+    input <- .importAssays(sce, assayNames)
+    input <- input[common.geneid, ]
+    cID <- sce@metadata$hexbin[[1]]
+    out <- t(apply(input, 1, function(x, cID){
+        schex:::.make_hexbin_function(x, "mean", cID)
+    }, cID=cID))
+    colnames(out) <- paste0("Bin", seq(ncol(out)))
+    out
 }
 
 .importAssays <- function(sce, assayNames){
@@ -88,38 +27,16 @@
     }
 }
 
-.plot.twoD_grid.SVD <- function(mat, twoD, n, d){
-    # Plot1
-    xmax <- max(twoD[, 1])
-    xmin <- min(twoD[, 1])
-    ymax <- max(twoD[, 2])
-    ymin <- min(twoD[, 2])
-    par(mai=c(0,0,0,0))
-    par(ask=FALSE)
-    plot(twoD,
-        xlim=c(xmin, xmax), ylim=c(ymin, ymax),
-        pch=16, col=rgb(0,0,0,0.5), xlab="", ylab="",
-        cex=1.5, axes=FALSE)
-
-    # Plot2
-    grid.value <- mat[, d]
-    original.color <- smoothPalette(grid.value,
-        palfunc=colorRampPalette(rev(brewer.pal(11, "RdYlBu"))))
-    original.color <- alpha(original.color, 0.8)
-    xdiv <- (xmax - xmin) / n
-    ydiv <- (ymax - ymin) / n
-    counter <- 1
-    for(i in seq_len(n)){
-        for(j in seq_len(n)){
-            xstart <- xmin + (i-1) * xdiv
-            xend  <- xmin + i * xdiv
-            ystart <- ymin + (j-1) * ydiv
-            yend <- ymin + j * ydiv
-            rect(xstart, ystart, xend, yend,
-                border="transparent", col=original.color[counter])
-        counter <- counter + 1
-        }
-    }
+.plot_hexbin_pattern <- function(sce, pattern){
+    drhex <- data.frame(sce@metadata$hexbin$hexbin.matrix,
+        pattern=pattern)
+    drhex <- as_tibble(drhex)
+    # Plot
+    ggplot(drhex, aes_string("x", "y", fill = pattern)) +
+    geom_hex(stat = "identity") +
+    theme_classic() + theme(legend.position = "bottom") +
+    ggtitle("Pattern1") + scale_fill_viridis_c() +
+    labs(x = "Dim1", y = "Dim2") + theme(legend.title = element_blank())
 }
 
 # Title, Author, Data
@@ -183,7 +100,7 @@
     "# SingleCellExperiment object\n",
     "sce\n",
     "# Reduced data size\n",
-    "metadata(sce)$rank\n",
+    "metadata(sce)$ndim\n",
     "# The result of jNMF\n",
     "str(metadata(sce)$sctgif)\n",
     "# Reconstruction Error of jNMF\n",
@@ -230,7 +147,7 @@
     )
 
 # 3. Attension maps and map related gene functions
-.BODY3 <- function(rank, out.dir){
+.BODY3 <- function(ndim, out.dir){
     BODY3 <- paste0("# Attension maps and map related gene functions\n",
         "```{r, message=F, warning=F, message=F, warning=F}\n", # Top
         "library(\"plotly\")\n",
@@ -239,12 +156,12 @@
 
     paste0(BODY3,
         paste(
-            vapply(seq_len(rank), function(x){
+            vapply(seq_len(ndim), function(x){
                 paste(c(
                     paste0("## Pattern ", x, "\n"),
                     ##### H1 #####
                     "![](",
-                    paste0(out.dir, "/figures/Grid_", x, ".png"),
+                    paste0(out.dir, "/figures/Hex_", x, ".png"),
                     ")\n",
                     ##### H2 #####
                     "```{r, message=F, warning=F}\n", # Top

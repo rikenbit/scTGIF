@@ -105,7 +105,7 @@ Some file is generated to output directory user specified.
             assayNames="normcounts")
 
         # Functional Annotation based on jNMF
-        calcTGIF(sce, rank=7)
+        calcTGIF(sce, ndim=7)
 
         # HTML Reprt
         reportTGIF(sce,

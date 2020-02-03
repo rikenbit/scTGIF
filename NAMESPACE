@@ -12,15 +12,22 @@ importFrom(rmarkdown, render)
 importFrom(Rcpp, sourceCpp)
 importFrom(grDevices, dev.off, png, colorRampPalette, rgb)
 importFrom(graphics, barplot, par, plot, rect)
-importFrom(utils, browseURL)
+importFrom(utils, browseURL, read.delim, setTxtProgressBar, txtProgressBar)
 importFrom(S4Vectors, metadata, "metadata<-")
 importFrom(SummarizedExperiment, assay, assays, "assay<-")
 importFrom(RColorBrewer, brewer.pal)
 importFrom(nnTensor, jNMF)
 importFrom(scales, alpha)
+importFrom(schex, make_hexbin)
+importFrom(tibble, as_tibble)
+importFrom(ggplot2, ggplot, geom_hex, theme_classic, theme, ggtitle, scale_fill_viridis_c, labs, aes_string, element_blank, ggsave)
+importFrom(stats, var, sd, na.omit)
+importFrom(igraph, graph.data.frame, max_bipartite_match, "V<-", "E<-", V, E)
 
 export(
     settingTGIF,
     calcTGIF,
-    reportTGIF
+    reportTGIF,
+    convertRowID,
+    cellMarkerToGmt
 )

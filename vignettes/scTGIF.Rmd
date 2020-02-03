@@ -178,7 +178,7 @@ After the setting above,
 `calcTGIF` calculates the jNMF with the two matrices described above.
 
 ```{r calc, echo=TRUE}
-calcTGIF(sce, rank=3)
+calcTGIF(sce, ndim=3)
 ```
 
 ### HTML Report : reportTGIF

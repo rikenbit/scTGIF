@@ -1,3 +1,11 @@
+VERSION 1.2.0
+------------------------
+   o convertRowID() and cellMarkerToGmt() were added
+
+VERSION 1.0.0
+------------------------
+   o Package release (Bioconductor 3.9)
+
 VERSION 0.99.0
 ------------------------
    o Package released
