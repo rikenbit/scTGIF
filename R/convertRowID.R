@@ -120,7 +120,7 @@ convertRowID <- function(input, rowID, LtoR,
         stop("There is no common with rowID and LtoR.")
     }else{
         position <- sapply(intersect(LtoR[,1], rowID), function(x){
-            which(rowID == x)})
+            which(rowID == x)[1]})
         input <- input[position, ]
         rowID <- rowID[position]
     }

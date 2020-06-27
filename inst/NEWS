@@ -1,3 +1,7 @@
+VERSION 1.2.1
+------------------------
+   o A bug is fixed in convertRowID()
+
 VERSION 1.2.0
 ------------------------
    o convertRowID() and cellMarkerToGmt() were added
