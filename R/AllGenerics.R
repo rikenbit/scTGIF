@@ -49,8 +49,7 @@ setMethod("settingTGIF",
     common.geneid <- intersect(data.geneid, gmt.geneid)
     if(length(common.geneid) == 0){
         stop(paste0("Please specify the rownames of assay(sce) and ",
-            paste0("reducedDims(sce)[['", reducedDimNames, "']]"),
-            " must be same and specified as NCBI (Entrez) Gene IDs"))
+            " gmt must be same and specified as NCBI (Entrez) Gene IDs"))
     }
     # Setting of schex
     sce <- make_hexbin(sce, nbins=nbins,

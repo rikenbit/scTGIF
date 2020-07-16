@@ -127,7 +127,7 @@ convertRowID <- function(input, rowID, LtoR,
     score <- .score(input, aggr.rule)
 
     # Mapping
-    unique.right <- unique(LtoR[, 2])
+    unique.right <- as.character(unique(LtoR[, 2]))
     f <- .flist[[aggr.rule]]
     out <- f(input, rowID, LtoR, score, unique.right)
     output <- out$output

@@ -1,7 +1,7 @@
 Package: scTGIF
 Type: Package
 Title: Cell type annotation for unannotated single-cell RNA-Seq data
-Version: 1.2.1
+Version: 1.2.2
 Authors@R: person("Koki", "Tsuyuzaki", role = c("aut", "cre"),
     email = "k.t.the-answer@hotmail.co.jp")
 Depends: R (>= 3.6.0)
