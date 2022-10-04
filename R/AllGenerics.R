@@ -178,7 +178,7 @@ setMethod("reportTGIF",
     # Plot
     for(i in seq_len(ncol(H1))){
         filename <- paste0(out.dir, "/figures/Hex_", i, ".png")
-        g <- .plot_hexbin_pattern(sce, H1[, i])
+        g <- .plot_hexbin_pattern(sce, H1[, i], i)
         ggsave(filename, plot=g, dpi=200, width=6, height=6.5)
         system(paste0("ls ", filename))
     }
